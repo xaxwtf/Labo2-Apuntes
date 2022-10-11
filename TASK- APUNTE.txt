@@ -1,0 +1,41 @@
+declarar una nueva tarea con "task.run(tarea)" la carga y corre mientras que usando  "new task(tarea)" solo la carga y se corre con "tarea.start()"
+tarea2."wait()" espera a que se ejecute la tarea;
+
+task.waitAll(t1,t2,....tx) recibe todas las tareas que deseamos que se terminen para continuar
+
+CancellationTokenSource cancelTokenSource= new  CancellationTokenSource();// se crea el cancelador
+
+
+/*CancellationToken ct=cancelTokenSource.Token;//opcional
+Task tarea=Task.Run(()=>tarea(ct));
+ct.Cancel();
+*/
+
+Task tarea=Task.Run(()=>tarea(cancelTokenSource.Token));(seria la mas corta)
+cancelTokenSource.Cancel();
+
+Thread.Sleep(3000);//delay
+
+///podemos lanzar una exeption al momento de cancelar explicando por que o que 
+public void metodo(CancelationToken cancelToken){
+	if(cancelToken.IsCancellationRequested){
+		throw new taskCanceledException("PROCESIO CANCELADO POR EL USUARIO");
+	}
+}
+
+
+
+tarea.Status==TaskStatus.Running //estado de la tarea
+
+ConcurrentBag<string> listaConcurrente= new ConcurrentBag<string>();//se crea una lista que puede ser accedida desde varias TAREAS
+listaConcurrente.TryTake(out string ultimoElemento);//es un metodo de la lista concurrente que elimina el ultimo elemento de la misma
+
+listaConcurrente.TryPeek(out string ultimo);//muestra el ultimo elemento de la lista
+
+
+if(this.componente.InvokeRequired){
+//pregunta si se quiere invocar al componente(si no es propio del la tarea se requerira);
+	this.compomente.BeginInvoke((MethodInvoker)delegate(){
+	componente.Visible=true;///visible es una propiedad del componente
+	})
+}

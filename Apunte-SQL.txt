@@ -1,0 +1,53 @@
+ public static void ObtenerClientesEnOtroHilo(CancellationToken cancellation)
+        {
+            string consulta = "select Nombre, Apellido, Cuil, Localidad from Table_Employes";
+            Cliente cte;
+            sqlConnection = new SqlConnection(conexion);
+            SqlCommand cm = new SqlCommand(consulta, sqlConnection);
+            Task.Run(() =>
+            {
+                Thread.Sleep(2);
+                try
+                {
+                    sqlConnection.Open();
+                    SqlDataReader sqlDataReader = cm.ExecuteReader();
+                    while (sqlDataReader.Read())
+                    {
+                        cte = new Cliente(sqlDataReader["nombre"].ToString(), int.Parse(sqlDataReader["cantProductos"].ToString()), bool.Parse(sqlDataReader["prioridad"].ToString()));
+                        InformarCliente.Invoke(cte);
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                finally
+                {
+                    sqlConnection.Close();
+                }
+
+            },cancellation);
+              
+        }
+public int Insertar(EmpleadoFreelance dato)
+        {
+            int r = 0;
+            if((dato.Dni<10000000 || dato.Dni > 45000000) || (dato.NombreCompleto==null || dato.NombreCompleto==""))
+            {
+                throw new DatoErroneoException("La Informacion no es Valida");
+            }
+            string textCommand = "INSERT INTO empleados (dni, nombreCompleto, puestoAcubrir) VALUES(@dni, @nombreCompleto, @puestoAcubir)";
+            this.comando = new SqlCommand(textCommand, this.connexion);
+
+            this.comando.Parameters.AddWithValue("@dni", dato.Dni);
+            this.comando.Parameters.AddWithValue("@nombreCompleto", dato.NombreCompleto);
+            this.comando.Parameters.AddWithValue("@puestoAcubir", dato.Posicion);
+
+            this.connexion.Open();
+            r=this.comando.ExecuteNonQuery();//using in  insersiones/deletes and edit
+            this.connexion.Close();
+
+            return r;
+        }
+
+

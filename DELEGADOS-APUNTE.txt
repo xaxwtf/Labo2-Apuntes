@@ -1,0 +1,4 @@
+declaracion 
+public delegate void DelegadPropio(param1 , param2 );
+
+es como un puntero que guarda lo que sea y la ejecuta con invoke;
